@@ -1,0 +1,24 @@
+__pycache__
+dev.db
+__pycache__
+.env.example
+
+# local-only
+.env
+.venv/
+__pycache__/
+.pytest_cache/
+.ipynb_checkpoints/
+.DS_Store
+*.pyc
+*.ipynb
+
+# local-only
+.env
+.venv/
+__pycache__/
+.pytest_cache/
+.ipynb_checkpoints/
+.DS_Store
+*.pyc
+data/out_of_use/
