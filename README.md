@@ -122,6 +122,9 @@ Schema is provided above to provide context for querying. Tables are populated u
 
 ## Credits
 Disease Overview dataset: Hugging Face (Shaheer14326/Disease_Symptoms_Dataset)
+
 Patient Profile dataset: Kaggle (uploaded by John Smith) (https://www.kaggle.com/datasets/rigatoni30/patient-profile-disease-symptoms/data) 
+
 DB Hosting: Neon.tech
+
 LLM: OpenAI GPT-4.1-nano
