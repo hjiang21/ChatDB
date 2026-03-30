@@ -84,6 +84,7 @@ make modify q="Add a 30 year old male patient with the stomach flu"
 
 
 ## Project Structure
+```
 ChatDB/
 |── app/
 |   |── db/               # DB session & config
@@ -94,6 +95,7 @@ ChatDB/
 |── Makefile              # CLI interface
 |── .env                  # (not committed) for DB url & API keys
 |── requirements.txt      # Python dependencies
+```
 
 
 
