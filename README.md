@@ -1,4 +1,4 @@
-# Text-to-SQL FastAPI Application
+# DiseaseDB: A Text-to-SQL FastAPI Application
 
 This project is a medical/disease database system that helps non-technical users access medical/disease information by asking questions or giving instructions in natural language. For example, a user can ask, "What are the top 5 most common symptoms associated with the common cold?" and the system uses OpenAI's GPT-4.1-nano model to translate the query to SQL, execute it against a database seeded with datasets from online sources, and return the results in human-readable form. 
 
