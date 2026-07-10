@@ -8,6 +8,7 @@ from app.db.base import Base
 from app.llm.text_to_sql import get_sql_query
 from app.llm.sql_to_text import get_text_response
 from app.llm.validate_sql import validate_sql, SQLValidationError, looks_like_a_question, NOT_A_WRITE_REQUEST_SENTINEL
+from app.config import ENABLE_WRITES
 from app.schemas.query import QueryRequest, QueryResponse, QueryResponseSummary
 
 
@@ -73,6 +74,12 @@ async def execute_query(query_req: QueryRequest, db: AsyncSession = Depends(get_
 async def execute_query(query_req: QueryRequest, db: AsyncSession = Depends(get_db)) -> QueryResponseSummary:
     # deterministic, non-LLM check: reject question-shaped requests before
     # ever calling the model. This does not depend on model compliance.
+    if not ENABLE_WRITES:
+        raise HTTPException(
+            status_code=403,
+            detail="Write operations are disabled for this deployment (ENABLE_WRITES=false).",
+        )
+
     if looks_like_a_question(query_req.query):
         raise HTTPException(
             status_code=400,
