@@ -88,7 +88,7 @@ make modify q="Add a 30 year old male patient with the stomach flu"
 ChatDB/
 |── app/
 |   |── db/               # DB session & config
-|   |── llm/              # text-to-SQL & SQL-to-text LLM modules
+|   |── llm/              # text-to-SQL + SQL-to-text LLM modules, SQL validation
 |   |── main.py           # FastAPI application logic
 |   |── seed_db.py        # data processing/upload script
 |── data/                 # data csv files 
