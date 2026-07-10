@@ -7,6 +7,7 @@ from app.db.session import engine, get_db
 from app.db.base import Base
 from app.llm.text_to_sql import get_sql_query
 from app.llm.sql_to_text import get_text_response
+from app.llm.validate_sql import validate_sql, SQLValidationError, looks_like_a_question, NOT_A_WRITE_REQUEST_SENTINEL
 from app.schemas.query import QueryRequest, QueryResponse, QueryResponseSummary
 
 
@@ -41,9 +42,17 @@ async def preview_tables(db: AsyncSession = Depends(get_db)):
 async def execute_query(query_req: QueryRequest, db: AsyncSession = Depends(get_db)) -> QueryResponseSummary:
     # generate SQL query from LLM 
     try:
-        sql_query = await get_sql_query(query_req.query)
+        sql_query = await get_sql_query(query_req.query, mode="read")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating SQL: {str(e)}")
+
+    # pre-execution guardrail: verify the generated SQL is actually a
+    # single, read-only statement against a known table before running it
+    try:
+        validate_sql(sql_query, mode="read")
+    except SQLValidationError as e:
+        raise HTTPException(status_code=400, detail=f"Rejected unsafe SQL before execution: {str(e)}")
+
     try:
         result = await db.execute(text(sql_query))
         rows = result.fetchall()
@@ -62,10 +71,36 @@ async def execute_query(query_req: QueryRequest, db: AsyncSession = Depends(get_
 # modify endpoint 
 @app.post("/modify", summary="Used for insertions and deletions.")
 async def execute_query(query_req: QueryRequest, db: AsyncSession = Depends(get_db)) -> QueryResponseSummary:
+    # deterministic, non-LLM check: reject question-shaped requests before
+    # ever calling the model. This does not depend on model compliance.
+    if looks_like_a_question(query_req.query):
+        raise HTTPException(
+            status_code=400,
+            detail="This looks like a question, not a data-modifying instruction. "
+                   "Use /query to ask questions, or rephrase this as an explicit "
+                   "instruction (e.g. 'delete the patient with id p0001').",
+        )
+
     try:
-        sql_query = await get_sql_query(query_req.query)
+        sql_query = await get_sql_query(query_req.query, mode="write")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating SQL: {str(e)}")
+
+    # second layer: the model itself may decline via the sentinel if the
+    # request was ambiguous in a way the heuristic above didn't catch
+    if sql_query.strip() == NOT_A_WRITE_REQUEST_SENTINEL:
+        raise HTTPException(
+            status_code=400,
+            detail="The model could not identify a clear data-modifying instruction "
+                   "in this request. Please rephrase it explicitly.",
+        )
+
+    # pre-execution guardrail: verify the generated SQL is actually a
+    # single write statement against a known table before running it
+    try:
+        validate_sql(sql_query, mode="write")
+    except SQLValidationError as e:
+        raise HTTPException(status_code=400, detail=f"Rejected unsafe SQL before execution: {str(e)}")
 
     try:
         await db.execute(text(sql_query))

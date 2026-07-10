@@ -13,24 +13,24 @@ def main():
 
     # The payload with your natural language query.
     payload = {
+        # examples to run...
         #"query": "Which diseases have more than 10 symptoms associated with them?"
-        #"query": "Which symptoms are associated with the achalasia?"   # achalasia doesn't have associated symptoms btw
         #"query": "What are the top 5 symptoms associated with rheumatoid arthritis?"
-        #"query": "Which symptoms are associated with the common cold?" good 
+        #"query": "Which symptoms are associated with the common cold?"  
         #"query": "Give me an overview of amnesia"
         #"query": "What is cerebral palsy?"
         #"query": "Is asthma more common in males or females?"
         "query": "Which diseases are linked to having bladder problems?"
     }
     
-    # Set headers to indicate JSON content.
+    # set headers to indicate JSON content
     headers = {
         "Content-Type": "application/json"
     }
     
     try:
         response = requests.post(url, json=payload, headers=headers)
-        response.raise_for_status()  # Raise an error for bad status codes
+        response.raise_for_status()  # raise error for bad status codes
         print("Status Code:", response.status_code)
         print("Response JSON:", response.json())
     except requests.RequestException as err:
