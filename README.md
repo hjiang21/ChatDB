@@ -1,4 +1,4 @@
-# Text-to-SQL FastAPI Application
+# DiseaseDB: A Text-to-SQL FastAPI Application
 
 This project is a medical/disease database system that helps non-technical users access medical/disease information by asking questions or giving instructions in natural language. For example, a user can ask, "What are the top 5 most common symptoms associated with the common cold?" and the system uses OpenAI's GPT-4.1-nano model to translate the query to SQL, execute it against a database seeded with datasets from online sources, and return the results in human-readable form. 
 
@@ -84,6 +84,7 @@ make modify q="Add a 30 year old male patient with the stomach flu"
 
 
 ## Project Structure
+```
 ChatDB/
 |── app/
 |   |── db/               # DB session & config
@@ -94,6 +95,7 @@ ChatDB/
 |── Makefile              # CLI interface
 |── .env                  # (not committed) for DB url & API keys
 |── requirements.txt      # Python dependencies
+```
 
 
 
@@ -120,6 +122,9 @@ Schema is provided above to provide context for querying. Tables are populated u
 
 ## Credits
 Disease Overview dataset: Hugging Face (Shaheer14326/Disease_Symptoms_Dataset)
+
 Patient Profile dataset: Kaggle (uploaded by John Smith) (https://www.kaggle.com/datasets/rigatoni30/patient-profile-disease-symptoms/data) 
+
 DB Hosting: Neon.tech
+
 LLM: OpenAI GPT-4.1-nano
