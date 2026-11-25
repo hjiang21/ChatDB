@@ -1,6 +1,18 @@
-# DiseaseDB: A Text-to-SQL FastAPI Application
+# ChatDB: Natural-Language Queries for PostgreSQL
 
-This project is a medical/disease database system that helps non-technical users access medical/disease information by asking questions or giving instructions in natural language. For example, a user can ask, "What are the top 5 most common symptoms associated with the common cold?" and the system uses OpenAI's GPT-4.1-nano model to translate the query to SQL, execute it against a database seeded with datasets from online sources, and return the results in human-readable form. 
+ChatDB lets users ask questions in plain English about a PostgreSQL database of diseases, symptoms, and synthetic patient records. A FastAPI backend translates each question into SQL, validates the query before execution, and summarizes the returned rows in plain English.
+
+## Quick example
+
+```bash
+make query q="How many patients are over 55 years old?"
+```
+
+ChatDB runs a read-only count against the synthetic patient table and returns the result in plain English.
+
+## Query validation
+
+The read endpoint accepts only a single `SELECT` statement against allowed tables. The application checks the generated SQL before sending it to PostgreSQL. Database writes are disabled by default and use a separate endpoint when enabled.
 
 ## Table of Contents
 
